@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "target": "ES5",
+    "outDir": "./dist",
+    "module": "ES6",
+    "moduleResolution": "Node",
+    "esModuleInterop": true
+  },
+  "include": ["./src/**/*.tsx", "./src/**/*.ts"]
+}
