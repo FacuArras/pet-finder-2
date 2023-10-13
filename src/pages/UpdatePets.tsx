@@ -5,7 +5,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { token } from "../hooks/atoms";
 import Button from "../components/Button";
 import Dropzone from "../components/DropzoneComponent";
-import Map from "../components/Map";
+import MapboxComponent from "../components/MapBox";
 import getOnePet from "../hooks/getOnePet";
 import setPetFound from "../hooks/setPetFound";
 import deleteOnePet from "../hooks/deleteOnePet";
@@ -151,12 +151,12 @@ export default function UpdatePets() {
           ubicación en el buscador y después, tocando el mapa, poner un marcador
           en un lugar más preciso)
         </p>
-        <Map
+        <MapboxComponent
           onSetLocation={handleSetLocation}
-          center={{
-            lng: petInfo.last_location_lng,
-            lat: petInfo.last_location_lat,
-          }}
+          centerLocation={[
+            petInfo.last_location_lng,
+            petInfo.last_location_lat,
+          ]}
           placeholder={petInfo.last_seen}
         />
 

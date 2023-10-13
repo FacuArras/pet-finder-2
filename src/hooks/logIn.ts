@@ -1,4 +1,4 @@
-export default async function logIn(userEmail: string, userPassword: string, cb) {
+export default async function logIn(userEmail: string, userPassword: string) {
     const response = await fetch("https://petfinderapp.onrender.com/auth/token", {
         method: "post",
         headers: {
@@ -13,9 +13,8 @@ export default async function logIn(userEmail: string, userPassword: string, cb)
     if (response.ok) {
         const data = await response.json();
 
-        console.log(data);
         localStorage.setItem("pet-finder", JSON.stringify({ "token": data }));
-        cb(data);
+        return data;
     } else {
         throw new Error("Error al iniciar sesión");
     };

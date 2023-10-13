@@ -1,6 +1,6 @@
 import Button from "../components/Button";
 import Dropzone from "../components/DropzoneComponent";
-import Map from "../components/Map";
+import MapboxComponent from "../components/MapBox";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -85,7 +85,7 @@ export default function PublishPet() {
           ubicación en el buscador y después, tocando el mapa, poner un marcador
           en un lugar más preciso)
         </p>
-        <Map onSetLocation={handleOnSetLocation} />
+        <MapboxComponent onSetLocation={handleOnSetLocation} />
 
         <label className="mt-4">
           <p className="font-medium text-lg">

@@ -1,9 +1,7 @@
-import { useEffect, useState } from "react";
 import Button from "../components/Button";
 import homeImage from "../img/home-image.png";
 import { Link } from "react-router-dom";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { token, userProfile } from "../hooks/atoms";
+import { useEffect } from "react";
 
 export default function Home() {
   return (

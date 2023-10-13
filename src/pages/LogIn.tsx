@@ -5,6 +5,7 @@ import Button from "../components/Button";
 import logIn from "../hooks/logIn";
 import { useRecoilState } from "recoil";
 import { token } from "../hooks/atoms";
+import { useState } from "react";
 
 type Inputs = {
   email: string;
@@ -14,6 +15,7 @@ type Inputs = {
 export default function LogIn() {
   const navigate = useNavigate();
   const [userToken, setUserToken] = useRecoilState(token);
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     register,
@@ -24,22 +26,20 @@ export default function LogIn() {
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
-      const response = await logIn(
-        data.email,
-        data.password.toString(),
-        (data) => {
-          if (data) {
-            setUserToken(data);
-            navigate("/");
-          }
-        }
-      );
+      setIsLoading(true);
+      const response = await logIn(data.email, data.password.toString());
+      setUserToken(response);
+      navigate("/");
     } catch (error) {
       console.log(error);
     }
   };
 
-  return (
+  return isLoading ? (
+    <div className="flex justify-center h-[85vh] items-center">
+      <div className="loader"></div>
+    </div>
+  ) : (
     <main className="bg-gradient-to-b from-white to-[#def4f0] py-12 px-5 min-h-[80vh] flex flex-col justify-center">
       <img src={logInImage} alt="logInImage" className="block mx-auto" />
       <h1 className="font-bold text-3xl text-center mt-6 text-[#1a2631]">
