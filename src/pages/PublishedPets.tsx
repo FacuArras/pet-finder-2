@@ -21,7 +21,6 @@ export default function PublishedPets() {
   useEffect(() => {
     async function getPets() {
       const data = await getPetsFromUser(userToken);
-      console.log(data);
       setPets(data);
       setIsLoading(false);
     }

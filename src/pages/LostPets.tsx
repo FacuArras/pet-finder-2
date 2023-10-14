@@ -21,7 +21,6 @@ export default function LostPets() {
     async function getPets(userCoords) {
       try {
         const data = await getPetsNearby(userCoords.lat, userCoords.lng);
-        console.log(data.hits);
         setPets(data.hits);
         setIsLocation(true);
         setIsLoading(false);

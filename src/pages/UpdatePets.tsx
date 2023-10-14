@@ -41,7 +41,6 @@ export default function UpdatePets() {
   useEffect(() => {
     async function getPet() {
       const data = await getOnePet(Number(location.pathname.split("/")[2]));
-      console.log(data);
       setPetInfo(data);
       setIsLoading(false);
     }
