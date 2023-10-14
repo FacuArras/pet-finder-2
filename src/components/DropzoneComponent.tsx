@@ -1,5 +1,5 @@
 import Dropzone from "dropzone";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 type Props = {
   isActive: boolean;

@@ -12,7 +12,6 @@ export const userProfile = selector({
         const userToken = get(token);
 
         if (userToken) {
-            console.log("Estas logueado");
             const response = await fetch("https://petfinderapp.onrender.com/auth/me", {
                 method: "get",
                 headers: {
@@ -24,8 +23,6 @@ export const userProfile = selector({
             const data = await response.json();
 
             return data;
-        } else {
-            console.log("Non estas logueado");
-        };
+        }
     }
 });

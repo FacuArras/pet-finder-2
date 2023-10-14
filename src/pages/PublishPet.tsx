@@ -5,8 +5,10 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useRecoilState } from "recoil";
-import { token } from "../hooks/atoms";
-import createPet from "../hooks/createPet";
+import { token } from "../api/atoms";
+import createPet from "../api/pet/createPet";
+import Loader from "../components/Loader";
+import scrollToTop from "../hook/scrollToTop";
 
 type Inputs = {
   name: string;
@@ -14,10 +16,14 @@ type Inputs = {
 };
 
 export default function PublishPet() {
+  scrollToTop();
   const navigate = useNavigate();
   const [pictureURL, setPictureURL] = useState();
   const [location, setLocation] = useState();
+  const [isLoading, setIsLoading] = useState(false);
   const [userToken, setUserToken] = useRecoilState(token);
+  const [formError, setFormError] = useState(null);
+
   const {
     register,
     handleSubmit,
@@ -28,6 +34,7 @@ export default function PublishPet() {
     let petLocation: { lat?: number; lng?: number; name?: string } = location;
 
     try {
+      setIsLoading(true);
       const response: any = await createPet(
         userToken,
         data.name,
@@ -39,9 +46,19 @@ export default function PublishPet() {
         petLocation.name
       );
 
-      navigate("/published-pets");
+      if (response.ok) {
+        navigate("/published-pets");
+      } else {
+        setFormError(
+          "Ha ocurrido un error con el registro del reporte, por favor chequeá que hayas completado todos los campos"
+        );
+        setIsLoading(false);
+      }
     } catch (error) {
-      console.log(error);
+      setFormError(
+        "Ha ocurrido un error con el registro del reporte, por favor chequeá que hayas completado todos los campos"
+      );
+      setIsLoading(false);
     }
   };
 
@@ -53,9 +70,11 @@ export default function PublishPet() {
     setPictureURL(url);
   };
 
-  return (
+  return isLoading ? (
+    <Loader />
+  ) : (
     <main className="bg-gradient-to-b from-white to-[#def4f0] py-8 px-5 min-h-[80vh] flex flex-col justify-center">
-      <h1 className="font-bold text-3xl text-center mt-6 mb-5 text-[#1a2631]">
+      <h1 className="font-bold text-3xl text-center mt-6 mb-5 text-tertiaryColor">
         Reportar mascota perdida
       </h1>
       <h2 className="font-medium text-xl text-center mb-10">
@@ -72,9 +91,15 @@ export default function PublishPet() {
           <input
             className="p-1 text-lg rounded-sm shadow-md w-full"
             type="text"
-            {...register("name")}
+            {...register("name", { required: "El nombre es obligatorio" })}
+            id="petName"
             autoComplete="off"
           />
+          {errors.name && (
+            <p className="text-red-500 font-semibold text-sm">
+              {errors.name.message}
+            </p>
+          )}
         </label>
 
         <p className="font-medium text-lg">Foto de tu mascota</p>
@@ -93,15 +118,27 @@ export default function PublishPet() {
           </p>
           <textarea
             className="p-1 text-lg rounded-sm shadow-md w-full resize-none"
-            {...register("description")}
+            id="petDescription"
+            {...register("description", {
+              required: "La descripción es obligatoria",
+            })}
             cols={30}
             rows={5}
           ></textarea>
+          {errors.description && (
+            <p className="text-red-500 font-semibold text-sm">
+              {errors.description.message}
+            </p>
+          )}
         </label>
+
+        {formError && (
+          <p className="text-red-500 font-semibold text-sm">{formError}</p>
+        )}
 
         <Button
           type={"submit"}
-          color={"bg-[#1a82b9]"}
+          color={"bg-primaryColor"}
           margin={"mt-2"}
           small={false}
         >

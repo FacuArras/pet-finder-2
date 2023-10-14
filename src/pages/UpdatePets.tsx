@@ -2,14 +2,16 @@ import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { token } from "../hooks/atoms";
+import { token } from "../api/atoms";
 import Button from "../components/Button";
 import Dropzone from "../components/DropzoneComponent";
 import MapboxComponent from "../components/MapBox";
-import getOnePet from "../hooks/getOnePet";
-import setPetFound from "../hooks/setPetFound";
-import deleteOnePet from "../hooks/deleteOnePet";
-import updateOnePet from "../hooks/updateOnePet";
+import getOnePet from "../api/pet/getOnePet";
+import setPetFound from "../api/pet/setPetFound";
+import deleteOnePet from "../api/pet/deleteOnePet";
+import updateOnePet from "../api/pet/updateOnePet";
+import Loader from "../components/Loader";
+import scrollToTop from "../hook/scrollToTop";
 
 type Inputs = {
   name: string;
@@ -17,12 +19,14 @@ type Inputs = {
 };
 
 export default function UpdatePets() {
+  scrollToTop();
   const location = useLocation();
   const navigate = useNavigate();
   const [pictureURL, setPictureURL] = useState();
   const [userToken, setUserToken] = useRecoilState(token);
   const [petInfo, setPetInfo] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [formError, setFormError] = useState(null);
   const [petLocation, setPetLocation] = useState({
     lat: undefined,
     lng: undefined,
@@ -54,7 +58,7 @@ export default function UpdatePets() {
     };
 
     try {
-      const response: any = await updateOnePet(
+      const response = await updateOnePet(
         userToken,
         Number(location.pathname.split("/")[2]),
         pet.name,
@@ -66,9 +70,19 @@ export default function UpdatePets() {
         pictureURL
       );
 
-      navigate("/published-pets");
+      if (response.ok) {
+        navigate("/published-pets");
+      } else {
+        setFormError(
+          "Ha ocurrido un error con el actualizado del reporte, por favor volvelo a intentar"
+        );
+        setIsLoading(false);
+      }
     } catch (error) {
-      console.log(error);
+      setFormError(
+        "Ha ocurrido un error con el actualizado del reporte, por favor volvelo a intentar"
+      );
+      setIsLoading(false);
     }
   };
 
@@ -91,7 +105,10 @@ export default function UpdatePets() {
 
       navigate("/published-pets");
     } catch (error) {
-      console.log(error);
+      setFormError(
+        "Ha ocurrido un error con el actualizado del reporte, por favor volvelo a intentar"
+      );
+      setIsLoading(false);
     }
   };
 
@@ -106,17 +123,18 @@ export default function UpdatePets() {
 
       navigate("/published-pets");
     } catch (error) {
-      console.log(error);
+      setFormError(
+        "Ha ocurrido un error con el actualizado del reporte, por favor volvelo a intentar"
+      );
+      setIsLoading(false);
     }
   };
 
   return isLoading ? (
-    <div className="flex justify-center h-[85vh] items-center">
-      <div className="loader"></div>
-    </div>
+    <Loader />
   ) : (
     <main className="bg-gradient-to-b from-white to-[#def4f0] py-8 px-5 min-h-[80vh] flex flex-col justify-center">
-      <h1 className="font-bold text-3xl text-center mt-6 mb-5 text-[#1a2631]">
+      <h1 className="font-bold text-3xl text-center mt-6 mb-5 text-tertiaryColor">
         Editar reporte de mascota perdida
       </h1>
       <h2 className="font-medium text-xl text-center mb-10">
@@ -135,6 +153,7 @@ export default function UpdatePets() {
             type="text"
             {...register("name")}
             autoComplete="name"
+            id="petName"
             placeholder={petInfo.full_name}
           />
         </label>
@@ -174,9 +193,13 @@ export default function UpdatePets() {
           ></textarea>
         </label>
 
+        {formError && (
+          <p className="text-red-500 font-semibold text-sm">{formError}</p>
+        )}
+
         <Button
           type={"submit"}
-          color={"bg-[#12517e]"}
+          color={"bg-secondaryColor"}
           margin={"mt-2"}
           small={false}
         >
@@ -184,7 +207,7 @@ export default function UpdatePets() {
         </Button>
         <Button
           type={"button"}
-          color={"bg-[#1a82b9]"}
+          color={"bg-primaryColor"}
           margin={""}
           small={false}
           onClick={handlePetFound}
@@ -193,7 +216,7 @@ export default function UpdatePets() {
         </Button>
         <Button
           type={"button"}
-          color={"bg-[#12517e]"}
+          color={"bg-secondaryColor"}
           margin={""}
           small={false}
           onClick={handleDeletePet}

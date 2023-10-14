@@ -1,11 +1,13 @@
 import logInImage from "../img/auth-image.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
-import Button from "../components/Button";
-import logIn from "../hooks/logIn";
 import { useRecoilState } from "recoil";
-import { token } from "../hooks/atoms";
+import { token } from "../api/atoms";
 import { useState } from "react";
+import Button from "../components/Button";
+import Loader from "../components/Loader";
+import logIn from "../api/auth/logIn";
+import scrollToTop from "../hook/scrollToTop";
 
 type Inputs = {
   email: string;
@@ -13,14 +15,15 @@ type Inputs = {
 };
 
 export default function LogIn() {
+  scrollToTop();
   const navigate = useNavigate();
   const [userToken, setUserToken] = useRecoilState(token);
   const [isLoading, setIsLoading] = useState(false);
+  const [formError, setFormError] = useState(false);
 
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<Inputs>();
 
@@ -31,14 +34,13 @@ export default function LogIn() {
       setUserToken(response);
       navigate("/");
     } catch (error) {
-      console.log(error);
+      setFormError(true);
+      setIsLoading(false);
     }
   };
 
   return isLoading ? (
-    <div className="flex justify-center h-[85vh] items-center">
-      <div className="loader"></div>
-    </div>
+    <Loader />
   ) : (
     <main className="bg-gradient-to-b from-white to-[#def4f0] py-12 px-5 min-h-[80vh] flex flex-col justify-center">
       <img src={logInImage} alt="logInImage" className="block mx-auto" />
@@ -57,11 +59,15 @@ export default function LogIn() {
           <input
             className="p-1 text-lg rounded-sm shadow-md w-full"
             type="email"
-            {...register("email", { required: true })}
+            {...register("email", { required: "El email es obligatorio" })}
             id="logInEmail"
             autoComplete="email"
-            required
           />
+          {errors.email && (
+            <p className="text-red-500 font-semibold text-sm">
+              {errors.email.message}
+            </p>
+          )}
         </label>
 
         <label>
@@ -69,12 +75,24 @@ export default function LogIn() {
           <input
             className="p-1 text-lg rounded-sm shadow-md w-full"
             type="password"
-            {...register("password", { required: true })}
+            {...register("password", {
+              required: "La contraseña es obligatoria",
+            })}
             id="logInPassword"
             autoComplete="off"
-            required
           />
+          {errors.password && (
+            <p className="text-red-500 font-semibold text-sm">
+              {errors.password.message}
+            </p>
+          )}
         </label>
+
+        {formError && (
+          <p className="text-red-500 font-semibold text-sm">
+            El mail y/o la contraseña no son válidos
+          </p>
+        )}
 
         <p className="font-medium text-md">
           No tenés cuenta?

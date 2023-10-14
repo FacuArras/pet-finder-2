@@ -35,7 +35,6 @@ export default function Card({
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<Inputs>();
 
@@ -52,7 +51,7 @@ export default function Card({
   };
 
   return (
-    <div className="bg-[#1a2631] relative mx-auto my-8 w-[90%] max-w-[310px] p-4 rounded-2xl shadow-xl">
+    <div className="bg-tertiaryColor relative mx-auto my-8 w-[90%] max-w-[310px] p-4 rounded-2xl shadow-xl">
       <div className="h-[165px] w-full rounded-xl overflow-hidden">
         <img
           src={imageURL}
@@ -69,7 +68,7 @@ export default function Card({
         {page === "lost" ? (
           <Button
             onClick={handleOnClickReport}
-            color={"bg-[#1a82b9]"}
+            color={"bg-primaryColor"}
             margin={""}
             type={"button"}
             small={true}
@@ -80,7 +79,7 @@ export default function Card({
         ) : (
           <Button
             onClick={handleClickOnEdit}
-            color={"bg-[#1a82b9]"}
+            color={"bg-primaryColor"}
             margin={""}
             type={"button"}
             small={true}
@@ -94,7 +93,7 @@ export default function Card({
       {isFormOpen ? (
         <div
           style={{ boxShadow: " 0 0 20px 13px #00000080" }}
-          className="fixed right-[5%] top-28 bg-[#1a2631] max-w-[400px] w-[90%] rounded-2xl py-6 px-4 flex flex-col z-20 items-center"
+          className="fixed right-[5%] top-28 bg-tertiaryColor max-w-[400px] w-[90%] rounded-2xl py-6 px-4 flex flex-col z-20 items-center"
         >
           <button
             type="button"
@@ -115,11 +114,15 @@ export default function Card({
               <input
                 className="p-1 text-lg rounded-sm shadow-md w-full text-black"
                 type="text"
-                {...register("name", { required: true })}
+                {...register("name", { required: "El nombre es obligatorio" })}
                 id="reportName"
                 autoComplete="off"
-                required
               />
+              {errors.name && (
+                <p className="text-red-500 font-semibold text-sm">
+                  {errors.name.message}
+                </p>
+              )}
             </label>
             <label>
               <p className="text-md">Teléfono (opcional)</p>
@@ -135,12 +138,18 @@ export default function Card({
               <p className="text-md">¿Dónde lo viste?</p>
               <textarea
                 className="p-1 text-lg rounded-sm shadow-md w-full resize-none text-black"
-                {...register("lastSeen", { required: true })}
+                {...register("lastSeen", {
+                  required: "La descripción es obligatoria",
+                })}
                 id="reportLastSeen"
-                required
                 cols={30}
                 rows={5}
               ></textarea>
+              {errors.lastSeen && (
+                <p className="text-red-500 font-semibold text-sm">
+                  {errors.lastSeen.message}
+                </p>
+              )}
             </label>
 
             <Button
@@ -162,7 +171,7 @@ export default function Card({
           </h2>
 
           <Button
-            color={"bg-[#12517e]"}
+            color={"bg-primaryColor"}
             margin={"mt-6"}
             type={"submit"}
             small={false}

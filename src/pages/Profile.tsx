@@ -1,13 +1,15 @@
-import Button from "../components/Button";
-import Dropzone from "../components/DropzoneComponent";
 import { useState } from "react";
 import { useRecoilValue } from "recoil";
-import { userProfile } from "../hooks/atoms";
+import { userProfile } from "../api/atoms";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRecoilState } from "recoil";
 import { useNavigate } from "react-router-dom";
-import { token } from "../hooks/atoms";
-import updateUser from "../hooks/updateUser";
+import { token } from "../api/atoms";
+import updateUser from "../api/user/updateUser";
+import scrollToTop from "../hook/scrollToTop";
+import Button from "../components/Button";
+import Dropzone from "../components/DropzoneComponent";
+import Loader from "../components/Loader";
 
 type Inputs = {
   name: string;
@@ -16,11 +18,14 @@ type Inputs = {
 };
 
 export default function Profile() {
+  scrollToTop();
   const navigate = useNavigate();
   const userProfileInfo = useRecoilValue(userProfile);
-  const [isReadOnly, setIsReadOnly] = useState(true);
-  const [pictureURL, setPictureURL] = useState();
   const [userToken, setUserToken] = useRecoilState(token);
+  const [isReadOnly, setIsReadOnly] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [pictureURL, setPictureURL] = useState();
+
   const {
     register,
     handleSubmit,
@@ -35,6 +40,7 @@ export default function Profile() {
     };
 
     try {
+      setIsLoading(true);
       const response: any = await updateUser(
         userToken,
         user.name,
@@ -57,9 +63,11 @@ export default function Profile() {
     setPictureURL(url);
   };
 
-  return (
+  return isLoading ? (
+    <Loader />
+  ) : (
     <main className="bg-gradient-to-b from-white to-[#def4f0] py-8 px-5 min-h-[80vh] flex flex-col justify-center">
-      <h1 className="font-bold text-3xl text-center mt-6 mb-10 text-[#1a2631]">
+      <h1 className="font-bold text-3xl text-center mt-6 mb-10 text-tertiaryColor">
         Mi perfil
       </h1>
 
@@ -115,7 +123,7 @@ export default function Profile() {
         {isReadOnly ? (
           <Button
             type={"button"}
-            color={"bg-[#1a82b9]"}
+            color={"bg-primaryColor"}
             margin={"mt-2"}
             onClick={toggleReadOnly}
             small={false}
@@ -126,7 +134,7 @@ export default function Profile() {
           <div>
             <Button
               type={"submit"}
-              color={"bg-[#1a82b9]"}
+              color={"bg-primaryColor"}
               margin={"mt-2"}
               small={false}
             >
@@ -135,7 +143,7 @@ export default function Profile() {
 
             <Button
               type={"button"}
-              color={"bg-[#12517e]"}
+              color={"bg-secondaryColor"}
               margin={"mt-5"}
               onClick={toggleReadOnly}
               small={false}

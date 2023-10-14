@@ -1,14 +1,16 @@
 import Card from "../components/Card";
 import { useState, useEffect } from "react";
 import { useRecoilState } from "recoil";
-import { token } from "../hooks/atoms";
+import { token } from "../api/atoms";
 import { useNavigate } from "react-router-dom";
 import noPetsImage from "../img/empty.png";
-import getPetsNearby from "../hooks/getPetsNearby";
-import createReport from "../hooks/createReport";
-import getOnePet from "../hooks/getOnePet";
+import getPetsNearby from "../api/pet/getPetsNearby";
+import createReport from "../api/pet/createReport";
+import getOnePet from "../api/pet/getOnePet";
+import scrollToTop from "../hook/scrollToTop";
 
 export default function LostPets() {
+  scrollToTop();
   const [pets, setPets] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [userToken, setUserToken] = useRecoilState(token);
@@ -67,7 +69,7 @@ export default function LostPets() {
   ) : isLocation ? (
     pets.length >= 1 ? (
       <main className="bg-gradient-to-b from-white to-[#def4f0] pt-12 pb-6 px-5 min-h-[80vh]">
-        <h1 className="font-bold text-[#1a2631] text-3xl text-center">
+        <h1 className="font-bold text-tertiaryColor text-3xl text-center">
           Mascotas perdidas cerca
         </h1>
 
@@ -102,7 +104,7 @@ export default function LostPets() {
     )
   ) : (
     <main className="bg-gradient-to-b from-white to-[#def4f0] px-5 min-h-[80vh] flex flex-col justify-center">
-      <h1 className="font-bold text-[#1a2631] text-3xl text-center">
+      <h1 className="font-bold text-tertiaryColor text-3xl text-center">
         Para poder ver las mascotas cerca de tu ubicación tenés que dejarnos ver
         tu ubicación primero...
       </h1>

@@ -15,5 +15,5 @@ export default async function updateUser(token, userFullName: string, userEmail:
 
     const data = await response.json();
 
-    console.log(data);
+    return data;
 }

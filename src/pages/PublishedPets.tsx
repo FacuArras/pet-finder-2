@@ -1,15 +1,18 @@
 import { useState, useEffect } from "react";
 import Card from "../components/Card";
 import { useRecoilState } from "recoil";
-import { token } from "../hooks/atoms";
+import { token } from "../api/atoms";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import { Link } from "react-router-dom";
 import noPetsImage from "../img/empty.png";
-import getPetsFromUser from "../hooks/getPetsFromUser";
-import deleteOnePet from "../hooks/deleteOnePet";
+import getPetsFromUser from "../api/pet/getPetsFromUser";
+import deleteOnePet from "../api/pet/deleteOnePet";
+import Loader from "../components/Loader";
+import scrollToTop from "../hook/scrollToTop";
 
 export default function PublishedPets() {
+  scrollToTop();
   const [pets, setPets] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [userToken, setUserToken] = useRecoilState(token);
@@ -39,12 +42,10 @@ export default function PublishedPets() {
   };
 
   return isLoading ? (
-    <div className="flex justify-center h-[85vh] items-center">
-      <div className="loader"></div>
-    </div>
+    <Loader />
   ) : pets && pets.length > 0 ? (
     <main className="bg-gradient-to-b from-white to-[#def4f0] pt-12 pb-6 px-5 min-h-[80vh]">
-      <h1 className="font-bold text-[#1a2631] text-3xl text-center">
+      <h1 className="font-bold text-tertiaryColor text-3xl text-center">
         Mis mascotas reportadas
       </h1>
 
@@ -65,7 +66,7 @@ export default function PublishedPets() {
     </main>
   ) : (
     <main className="bg-gradient-to-b from-white to-[#def4f0] py-12 px-5 min-h-[80vh]">
-      <h1 className="font-bold text-[#1a2631] text-3xl text-center">
+      <h1 className="font-bold text-tertiaryColor text-3xl text-center">
         Todavía no reportaste ninguna mascota
       </h1>
       <img
@@ -76,7 +77,7 @@ export default function PublishedPets() {
       <Link to={"/publish-pet"}>
         <Button
           type={"button"}
-          color={"bg-[#1a82b9]"}
+          color={"bg-primaryColor"}
           margin={"mt-16"}
           small={false}
         >

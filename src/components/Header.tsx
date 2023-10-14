@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import logoSvg from "../img/logo.svg";
 import { useRecoilValue } from "recoil";
 import { useRecoilState } from "recoil";
-import { token, userProfile } from "../hooks/atoms";
+import { token, userProfile } from "../api/atoms";
 
 export default function Header() {
   const [offcanvas, setOffcanvas] = useState(false);
@@ -23,11 +23,11 @@ export default function Header() {
 
   return (
     <header className="z-10 sticky top-0 w-full shadow-xl">
-      <nav className="bg-[#1a2631] flex justify-between items-center py-6 px-4">
+      <nav className="bg-tertiaryColor flex justify-between items-center py-6 px-4">
         <Link to={"/"}>
           <img
             src={logoSvg}
-            alt="petFinderLogo"
+            alt="Pet Finder App Logo"
             onClick={() => {
               setOffcanvas(false);
             }}
@@ -46,7 +46,7 @@ export default function Header() {
       <div
         className={`${
           offcanvas ? "translate-x-0" : "translate-x-full"
-        } fixed bottom-0 right-0 top-0 z-20 flex w-3/4 h-5/6 min-h-[660px] rounded-l-3xl max-w-full flex-col border-none bg-[#1a2631] shadow-2xl outline-none transition duration-300 ease-in-out justify-between pt-10 pb-16 px-6`}
+        } fixed bottom-0 right-0 top-0 z-20 flex w-3/4 h-5/6 min-h-[660px] rounded-l-3xl max-w-full flex-col border-none bg-tertiaryColor shadow-2xl outline-none transition duration-300 ease-in-out justify-between pt-10 pb-16 px-6`}
       >
         <button
           onClick={toggleOffcanvas}
@@ -94,7 +94,7 @@ export default function Header() {
             <Link
               to="/"
               onClick={handleLogOut}
-              className="text-[#1a82b9] underline block mx-auto"
+              className="text-primaryColor underline block mx-auto"
             >
               Cerrar sesión
             </Link>
@@ -105,7 +105,7 @@ export default function Header() {
             <Link
               to="/login"
               onClick={toggleOffcanvas}
-              className="text-[#1a82b9] underline"
+              className="text-primaryColor underline"
             >
               acá
             </Link>
